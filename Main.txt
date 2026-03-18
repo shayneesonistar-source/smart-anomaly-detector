@@ -1,0 +1,30 @@
+Main Code(main.py)
+
+import pandas as pd
+from sklearn.ensemble import IsolationForest
+# loading file
+data_file= pd.read_csv("data.csv")
+print("starting analysis...")
+print("file loaded... checking")
+# selecting columns (maybe can add more later)
+features = data_file[["UsageHours", "Transactions"]]
+# model create
+# using isolation forest (seems good for this type)
+model = IsolationForest(contamination=0.25)
+print("training model...")
+model.fit(features)
+# prediction
+predictions = model.predict(features)
+# converting output
+status = []
+for val in predictions:
+    if val == -1:
+        status.append("Anomaly")   # maybe unusual case
+    else:
+        status.append("Normal")
+data_file["Status"] = status
+print("\nresult below:\n")
+print(data_file)
+# saving result also (just in case)
+data_file.to_csv("output.csv", index=False)
+print("\noutput saved")
